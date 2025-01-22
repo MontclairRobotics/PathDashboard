@@ -7,4 +7,3 @@ If you want to change where the waypoints are, enable tweaking mode. Paste it in
 - export directly in pathplanner code
 - add flip side
 - sync with our real naming scheme
-- make field the right aspect ratio
