@@ -99,136 +99,41 @@
     const ctx = canvas.getContext('2d');
     const output = document.getElementById('output');
     const waypointCode = document.getElementById('waypoint-code');
- 
- 
+    
     const predefinedWaypoints = [
-  {
-    "id": "1",
-    "x": 121,
-    "y": 130.125
-  },
-  {
-    "id": "2",
-    "x": 150,
-    "y": 113.125
-  },
-  {
-    "id": "3",
-    "x": 181,
-    "y": 92.125
-  },
-  {
-    "id": "4",
-    "x": 118,
-    "y": 468.125
-  },
-  {
-    "id": "5",
-    "x": 145,
-    "y": 488.125
-  },
-  {
-    "id": "6",
-    "x": 175,
-    "y": 507.125
-  },
-  {
-    "id": "S1",
-    "x": 518,
-    "y": 107.125
-  },
-  {
-    "id": "S2",
-    "x": 516,
-    "y": 245.125
-  },
-  {
-    "id": "S3",
-    "x": 516,
-    "y": 298.125
-  },
-  {
-    "id": "S4",
-    "x": 518,
-    "y": 352.125
-  },
-  {
-    "id": "S5",
-    "x": 518,
-    "y": 497.125
-  },
-  {
-    "id": "a",
-    "x": 301,
-    "y": 311.125
-  },
-  {
-    "id": "A",
-    "x": 300,
-    "y": 287.125
-  },
-  {
-    "id": "b",
-    "x": 320,
-    "y": 256.125
-  },
-  {
-    "id": "B",
-    "x": 340,
-    "y": 247.125
-  },
-  {
-    "id": "c",
-    "x": 375,
-    "y": 246.125
-  },
-  {
-    "id": "C",
-    "x": 398,
-    "y": 258.125
-  },
-  {
-    "id": "d",
-    "x": 418,
-    "y": 285.125
-  },
-  {
-    "id": "D",
-    "x": 416,
-    "y": 313.125
-  },
-  {
-    "id": "e",
-    "x": 402,
-    "y": 341.125
-  },
-  {
-    "id": "E",
-    "x": 378,
-    "y": 354.125
-  },
-  {
-    "id": "f",
-    "x": 342,
-    "y": 356.125
-  },
-  {
-    "id": "F",
-    "x": 320,
-    "y": 344.125
-  }
-];
-
+      { id: "1", x: 121, y: 130.125 },
+      { id: "2", x: 150, y: 113.125 },
+      { id: "3", x: 181, y: 92.125 },
+      { id: "4", x: 118, y: 468.125 },
+      { id: "5", x: 145, y: 488.125 },
+      { id: "6", x: 175, y: 507.125 },
+      { id: "S1", x: 518, y: 107.125 },
+      { id: "S2", x: 516, y: 245.125 },
+      { id: "S3", x: 516, y: 298.125 },
+      { id: "S4", x: 518, y: 352.125 },
+      { id: "S5", x: 518, y: 497.125 },
+      { id: "a", x: 301, y: 311.125 },
+      { id: "A", x: 300, y: 287.125 },
+      { id: "b", x: 320, y: 256.125 },
+      { id: "B", x: 340, y: 247.125 },
+      { id: "c", x: 375, y: 246.125 },
+      { id: "C", x: 398, y: 258.125 },
+      { id: "d", x: 418, y: 285.125 },
+      { id: "D", x: 416, y: 313.125 },
+      { id: "e", x: 402, y: 341.125 },
+      { id: "E", x: 378, y: 354.125 },
+      { id: "f", x: 342, y: 356.125 },
+      { id: "F", x: 320, y: 344.125 },
+    ];
 
     let selectedWaypoints = [];
+    let renderWaypoints = [];
     let tweakingMode = false;
     let draggingWaypoint = null;
     const fieldImage = new Image();
 
     fieldImage.src = 'https://lh3.googleusercontent.com/pw/AP1GczNS3jp1GGMGcutugRuk_jJedvIXzUh-UtLmJmfoOnhEgrTC6iVNxFFsqYrgR6Oj-hFmqTxG4fMMHV5PVP9dfTklGLayMINvMEM4bFH7WHLBEHw_ZwPw=w600-h315-p-k';
-    fieldImage.onload = () => {
-      redrawCanvas();
-    };
+    fieldImage.onload = () => redrawCanvas();
 
     function drawCircle(x, y, color = 'blue', label = '') {
       ctx.beginPath();
@@ -259,24 +164,20 @@
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.drawImage(fieldImage, 0, 0, canvas.width, canvas.height);
 
-      for (let i = 0; i < selectedWaypoints.length - 1; i++) {
-        const wp1 = predefinedWaypoints.find(wp => wp.id === selectedWaypoints[i]);
-        const wp2 = predefinedWaypoints.find(wp => wp.id === selectedWaypoints[i + 1]);
-        if (wp1 && wp2) {
-          drawLine(wp1.x, wp1.y, wp2.x, wp2.y);
-        }
+      for (let i = 0; i < renderWaypoints.length - 1; i++) {
+        const wp1 = predefinedWaypoints.find(wp => wp.id === renderWaypoints[i]);
+        const wp2 = predefinedWaypoints.find(wp => wp.id === renderWaypoints[i + 1]);
+        if (wp1 && wp2) drawLine(wp1.x, wp1.y, wp2.x, wp2.y);
       }
 
       predefinedWaypoints.forEach(wp => {
-        const color = selectedWaypoints.includes(wp.id) ? 'green' : 'blue';
+        const color = renderWaypoints.includes(wp.id) ? 'green' : 'blue';
         drawCircle(wp.x, wp.y, color, wp.id);
       });
     }
 
     function getClickedWaypoint(x, y) {
-      return predefinedWaypoints.find(
-        wp => Math.hypot(wp.x - x, wp.y - y) <= 10
-      );
+      return predefinedWaypoints.find(wp => Math.hypot(wp.x - x, wp.y - y) <= 10);
     }
 
     function updateOutput() {
@@ -305,9 +206,7 @@
       }
     });
 
-    canvas.addEventListener('mouseup', () => {
-      draggingWaypoint = null;
-    });
+    canvas.addEventListener('mouseup', () => (draggingWaypoint = null));
 
     canvas.addEventListener('click', e => {
       if (tweakingMode) return;
@@ -317,7 +216,20 @@
 
       const clickedWaypoint = getClickedWaypoint(x, y);
       if (clickedWaypoint) {
-        selectedWaypoints.push(clickedWaypoint.id);
+        if (['a', 'A', 'b', 'B', 'c', 'C', 'd', 'D', 'e', 'E', 'f', 'F'].includes(clickedWaypoint.id)) {
+          let level = prompt(`Enter a level for ${clickedWaypoint.id} (1-4):`);
+          level = parseInt(level, 10);
+          if (level >= 1 && level <= 4) {
+            selectedWaypoints.push(`${clickedWaypoint.id}${level}`);
+            renderWaypoints.push(clickedWaypoint.id);
+          } else {
+            alert('Invalid level! Please enter a number between 1 and 4.');
+            return;
+          }
+        } else {
+          selectedWaypoints.push(clickedWaypoint.id);
+          renderWaypoints.push(clickedWaypoint.id);
+        }
         redrawCanvas();
         updateOutput();
       }
@@ -325,6 +237,7 @@
 
     document.getElementById('clear').addEventListener('click', () => {
       selectedWaypoints = [];
+      renderWaypoints = [];
       redrawCanvas();
       updateOutput();
     });
@@ -338,12 +251,10 @@
 
     document.getElementById('toggle-tweak').addEventListener('click', () => {
       tweakingMode = !tweakingMode;
-      alert(tweakingMode ? 'Tweaking mode enabled' : 'Tweaking mode disabled');
+      alert(tweakingMode ? 'Tweaking mode enabled.' : 'Tweaking mode disabled.');
     });
 
     document.getElementById('generate-code').addEventListener('click', generateWaypointCode);
-
-    redrawCanvas();
   </script>
 </body>
 </html>
