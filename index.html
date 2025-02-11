@@ -85,7 +85,7 @@
       <h2>Controls</h2>
       <button id="toggle-tweak">Enable Tweaking Mode</button>
       <button id="clear">Clear Selection</button>
-      <button id="copy">Copy Path</button>
+      <button onclick=sendAutoString()>Copy Path</button>
       <h3>Waypoint Sequence</h3>
       <div id="output"></div>
       <h3>Generated Code for Waypoints</h3>
@@ -93,7 +93,17 @@
       <div id="waypoint-code"></div>
     </div>
   </div>
+ <script src="http://robotrio-555-frc.local:8888/networktables.js"></script> 
 
+  <script>
+    function sendAutoString() {
+        let autoString = selectedWaypoints.join('');
+        let nt = NetworkTables.getTable("Auto");
+        nt.putValue("Auto String", autoString);
+        console.log("Sent Auto String:", autoString);
+    }
+  </script>
+  
   <script>
     const canvas = document.getElementById('plannerCanvas');
     const ctx = canvas.getContext('2d');
@@ -244,8 +254,7 @@
 
     document.getElementById('copy').addEventListener('click', () => {
       navigator.clipboard
-        .writeText(selectedWaypoints.join(' -> '))
-        .then(() => alert('Path copied!'))
+        .writeText(selectedWaypoints.join(''))
         .catch(() => alert('Failed to copy!'));
     });
 
