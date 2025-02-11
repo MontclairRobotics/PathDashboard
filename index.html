@@ -85,7 +85,7 @@
       <h2>Controls</h2>
       <button id="toggle-tweak">Enable Tweaking Mode</button>
       <button id="clear">Clear Selection</button>
-      <button onclick=sendAutoString()>Copy Path</button>
+      <button onclick=sendAutoString()>PUSH</button>
       <h3>Waypoint Sequence</h3>
       <div id="output"></div>
       <h3>Generated Code for Waypoints</h3>
@@ -93,14 +93,18 @@
       <div id="waypoint-code"></div>
     </div>
   </div>
- <script src="http://robotrio-555-frc.local:8888/networktables.js"></script> 
-
   <script>
     function sendAutoString() {
-        let autoString = selectedWaypoints.join('');
-        let nt = NetworkTables.getTable("Auto");
-        nt.putValue("Auto String", autoString);
-        console.log("Sent Auto String:", autoString);
+        let autoString = selectedWaypoints.join(''); 
+  
+        fetch("http://localhost:8000", {  
+            method: "POST",
+            headers: { "Content-Type": "text/plain" },
+            body: autoString
+        })
+        .then(response => response.text())
+        .then(data => console.log("Response:", data))
+        .catch(error => console.error("Error:", error));
     }
   </script>
   
