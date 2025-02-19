@@ -6,7 +6,9 @@ If you want to change where the waypoints are, enable tweaking mode. Paste it in
 # Setup
 Install python 3
 pip install pynetworktables
+pip install pygame
 
 # Running It
 python server.py
+python brr.py
 open path.html in your browser
