@@ -8,13 +8,16 @@ pygame.joystick.init()
 NetworkTables.initialize(server="127.0.0.1")
 table = NetworkTables.getTable("Testing")
 
-joystick = None
-if pygame.joystick.get_count() > 0:
-    joystick = pygame.joystick.Joystick(0)
+joysticks = []
+
+for i in range(pygame.joystick.get_count()):
+    joystick = pygame.joystick.Joystick(i)
     joystick.init()
-    print(f"Initialized joystick: {joystick.get_name()}")
-else:
-    print("No joystick found!")
+    joysticks.append(joystick)
+    print(f"Initialized joystick {i}: {joystick.get_name()}")
+
+if not joysticks:
+    print("No joysticks")
     exit(1)
 
 previous_value = False
@@ -25,8 +28,12 @@ def value_changed(table, key, value, is_new):
     print(f"[PYTHON] Received {key} = {value}")
     
     if value and not previous_value:
-        print("Triggering rumble!")
-        joystick.rumble(1.0, 1.0, 1000)  
+        print("Going Brr")
+        for joystick in joysticks:
+            try:
+                joystick.rumble(1.0, 1.0, 1000)  
+            except Exception as e:
+                print(f"Error rumbling {joystick.get_name()}: {e}")
         
     previous_value = value
 
@@ -45,6 +52,6 @@ try:
         time.sleep(0.1)
         
 except KeyboardInterrupt:
-    print("Exiting...")
+    print("Exiting")
 finally:
     pygame.quit()
