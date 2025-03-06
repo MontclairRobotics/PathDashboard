@@ -5,7 +5,7 @@ import time
 pygame.init()
 pygame.joystick.init()
 
-NetworkTables.initialize(server="127.0.0.1")
+NetworkTables.initialize(server="roborio-555-frc.local", port=5810)
 table = NetworkTables.getTable("Testing")
 
 joysticks = []
